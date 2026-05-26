@@ -1,0 +1,52 @@
+server:
+  port: 9000
+
+spring:
+  application:
+    name: mini-mall
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/mini_mall?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: 你的数据库密码          # ← 改成自己的
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+      timeout: 3000ms
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      logic-delete-field: isDeleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+# JWT 配置
+jwt:
+   secret: 改成自己的密钥-至少32字符-生产环境要复杂  # ← 改成自己的
+   expiration: 604800000                            # 7 天
+   header: Authorization
+
+# Knife4j 接口文档
+springdoc:
+    swagger-ui:
+       path: /swagger-ui.html
+       tags-sorter: alpha
+       operations-sorter: alpha
+    api-docs:
+       path: /v3/api-docs
+    group-configs:
+       - group: 'default'
+         paths-to-match: '/**'
+         packages-to-scan: com.minimall.minimall.controller
+
+knife4j:
+     enable: true
+     setting:
+       language: zh_cn
+       swagger-model-name: 实体类

@@ -24,4 +24,10 @@ public interface IOrdersService extends IService<Orders> {
     OrderDetailVO getOrderDetail(Long orderId);
     List<OrderListVO> listMyOrders();
     void payOrder(Long orderId);
+
+    /**
+     * MQ 消费者专用：根据订单 ID 关单（不校验登录用户、自带幂等）
+     * 跟 cancelOrder 的区别：不读 UserContext（消费者线程没有 HTTP 上下文）
+     */
+    void closeOrderByMQ(Long orderId);
 }

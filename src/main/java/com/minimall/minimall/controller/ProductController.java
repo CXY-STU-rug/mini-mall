@@ -3,6 +3,7 @@ package com.minimall.minimall.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.minimall.minimall.common.annotation.RateLimit;
 import com.minimall.minimall.common.result.Result;
 import com.minimall.minimall.entity.Product;
 import com.minimall.minimall.service.IProductService;
@@ -73,7 +74,7 @@ public class ProductController {
         productService.deleteProduct(id);                     // ← 改这里
         return Result.success();
     }
-
+    @RateLimit(count = 10, seconds = 60, key = "user")
     @GetMapping("/hot-search")
     public Result<List<Map<String, Object>>> hotSearch() {
         return Result.success(productService.getHotSearch(10));

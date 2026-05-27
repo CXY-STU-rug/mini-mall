@@ -14,7 +14,7 @@ public class OrderTimeoutTask {
     @Autowired
     private IOrdersService ordersService;
 
-    @Scheduled(cron = "0 * * * * *")    // 每分钟整触发
+   // @Scheduled(cron = "0 * * * * *")    // 每分钟整触发
     public void closeTimeoutOrders() {
         log.info("开始扫描超时订单...");
         int count = ordersService.closeTimeoutOrders();

@@ -24,6 +24,11 @@ public class RabbitMQConfig {
     public static final String CLOSE_QUEUE    = "order.close.queue";
     public static final String CLOSE_ROUTING_KEY = "close";
 
+    // ========== 秒杀异步下单（普通队列，不要 TTL/DLX）==========
+    public static final String SECKILL_EXCHANGE = "seckill.exchange";
+    public static final String SECKILL_QUEUE    = "seckill.queue";
+    public static final String SECKILL_ROUTING_KEY = "seckill";
+
     // ========== 1) 延迟交换机（Direct 类型）==========
     @Bean
     public DirectExchange delayExchange() {
@@ -68,5 +73,25 @@ public class RabbitMQConfig {
         return BindingBuilder.bind(closeQueue())
                 .to(closeExchange())
                 .with(CLOSE_ROUTING_KEY);
+    }
+
+    // ========== 7) 秒杀异步下单交换机 ==========
+    @Bean
+    public DirectExchange seckillExchange() {
+        return new DirectExchange(SECKILL_EXCHANGE, true, false);
+    }
+
+    // ========== 8) 秒杀异步下单队列 ==========
+    @Bean
+    public Queue seckillQueue() {
+        return new Queue(SECKILL_QUEUE, true);
+    }
+
+    // ========== 9) 秒杀队列绑定 ==========
+    @Bean
+    public Binding seckillBinding() {
+        return BindingBuilder.bind(seckillQueue())
+                .to(seckillExchange())
+                .with(SECKILL_ROUTING_KEY);
     }
 }

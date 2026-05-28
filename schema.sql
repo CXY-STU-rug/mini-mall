@@ -186,3 +186,37 @@ CREATE TABLE `order_item` (
 --      由 mybatis-plus 的 map-underscore-to-camel-case: true 自动映射
 --   6. 索引原则：where 经常用、order by 经常用的字段加 KEY；唯一字段加 UNIQUE KEY
 --   7. 订单/订单明细的"快照字段"：下单瞬间冻结，不跟随商品/地址后续变化
+
+
+
+CREATE TABLE IF NOT EXISTS seckill_activity (
+id BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+product_id BIGINT NOT NULL COMMENT '商品ID',
+ seckill_price DECIMAL(10,2) NOT NULL COMMENT '秒杀单价',
+stock INT NOT NULL COMMENT '秒杀库存',
+start_time DATETIME NOT NULL COMMENT '秒杀开始时间',
+end_time DATETIME NOT NULL COMMENT '秒杀结束时间',
+status TINYINT NOT NULL DEFAULT 0 COMMENT '状态：0-待开始，1-进行中，2-已结束'
+create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='秒杀活动表';
+
+
+create table if not exists seckill_activity_id (
+  `id`           BIGINT        NOT NULL AUTO_INCREMENT     COMMENT '主键ID',
+  `order_no`     VARCHAR(32)   NOT NULL                     COMMENT '订单号（业务唯一）',
+  `user_id`      BIGINT        NOT NULL                     COMMENT '用户ID',
+  `total_amount` DECIMAL(10,2) NOT NULL                     COMMENT '订单总金额',
+  `status`       TINYINT       NOT NULL DEFAULT 0           COMMENT '状态：0待付款 1已付款 2已发货 3已完成 4已取消',
+  `receiver`     VARCHAR(50)   NOT NULL                     COMMENT '收货人（快照）',
+  `phone`        VARCHAR(20)   NOT NULL                     COMMENT '手机号（快照）',
+  `address`      VARCHAR(500)  NOT NULL                     COMMENT '收货地址（快照，省+市+区+详细）',
+  `pay_time`     DATETIME      DEFAULT NULL                 COMMENT '支付时间',
+  `ship_time`    DATETIME      DEFAULT NULL                 COMMENT '发货时间',
+  `finish_time`  DATETIME      DEFAULT NULL                 COMMENT '完成时间',
+  `remark`       VARCHAR(200)  DEFAULT NULL                 COMMENT '备注',
+  `create_time`  DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time`  DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `is_deleted`   TINYINT       NOT NULL DEFAULT 0           COMMENT '逻辑删除',
+  `seckill_activity_id` BIGINT NOT NULL COMMENT '秒杀活动ID（指向 seckill_activity.id）',
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='秒杀订单表';
